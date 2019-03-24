@@ -1,0 +1,187 @@
+cd /home/pi
+
+mkdir breakout-garden
+
+cd breakout-garden
+
+wget https://github.com/pimoroni/breakout-garden/archive/master.zip
+
+unzip master.zip
+
+cd breakout-garden-master/
+
+Run sudo ./install.sh
+
+pi@PiWarsSpot:~/breakout-garden/breakout-garden-master $  sudo ./install.sh
+
+Breakout Garden: Installer. (1 breakout(s) found) 
+
+vl53l1x time of flight:         Installed      
+
+Installing 1 module(s). Enter to continue (Ctrl+C to cancel)...
+
+
+now we connected the OLED and motion sensor and they were also detected and installed but it to bit longer
+
+ pi@PiWarsSpot:~/breakout-garden/breakout-garden-master $ sudo ./install.sh
+
+Breakout Garden: Installer. (3 breakout(s) found) 
+
+1.12" mono OLED:                Installed      
+lsm303d 6dof:                   Installed      
+vl53l1x time of flight:         Installed      
+
+Installing 3 module(s). Enter to continue (Ctrl+C to cancel)..
+
+
+pi@PiWarsSpot:~/breakout-garden/breakout-garden-master/examples/weather $ sudo pip3 install requests
+Requirement already satisfied: requests in /usr/lib/python3/dist-packages
+
+pi@PiWarsSpot:~/breakout-garden/breakout-garden-master/examples/weather $ ./weather.py 
+Traceback (most recent call last):
+  File "./weather.py", line 14, in <module>
+    import bme680
+ImportError: No module named 'bme680'
+
+We did not have the above sensor. So we decide to run the distance example
+
+
+pi@PiWarsSpot:~/breakout-garden/breakout-garden-master/examples/distance $ ./distance.py
+This Pimoroni Breakout Garden example requires an
+VL53L1X Time of Flight Sensor Breakout and a 1.12" OLED Breakout.
+
+The Park-O-Matic 6000 is a car reversing indicator mockup!
+
+Press Ctrl+C a couple times to exit.
+
+VL53L0X_GetDeviceInfo:
+Device Name : VL53L1 cut1.1
+Device Type : VL53L1
+Device ID : 
+ProductRevisionMajor : 1
+ProductRevisionMinor : 15
+^CTraceback (most recent call last):
+  File "./distance.py", line 70, in <module>
+    oled.display(background)
+  File "/usr/local/lib/python3.5/dist-packages/luma/oled/device/__init__.py", line 119, in display
+    (image_data[x + offsets[6]] and 0x40) | \
+KeyboardInterrupt
+
+
+-----------------------
+
+pi@PiWarsSpot:~/breakout-garden/breakout-garden-master/examples/seismograph $ ./seismograph.py 
+This Pimoroni Breakout Garden example requires an
+LSM303D 6DoF Breakout and a 1.12" OLED Breakout.
+
+The Dino-Detect v1.2 beta is a dino stomp detector. It's a
+UNIX system, I know this.
+
+Press Ctrl+C a couple times to exit.
+
+/home/pi/breakout-garden/breakout-garden-master/examples/seismograph/fonts/Roboto-Regular.ttf
+^CTraceback (most recent call last):
+  File "./seismograph.py", line 109, in <module>
+    oled.display(background)
+  File "/usr/local/lib/python3.5/dist-packages/luma/oled/device/__init__.py", line 122, in display
+    self.data(list(buf))
+  File "/usr/local/lib/python3.5/dist-packages/luma/core/device.py", line 46, in data
+    self._serial_interface.data(data)
+  File "/usr/local/lib/python3.5/dist-packages/luma/core/interface/serial.py", line 106, in data
+    write(self._addr, self._data_mode, list(data[i:i + 32]))
+  File "/usr/local/lib/python3.5/dist-packages/smbus2/smbus2.py", line 468, in write_i2c_block_data
+    ioctl(self.fd, I2C_SMBUS, msg)
+KeyboardInterrupt
+
+
+[30 DEC 2018 - LJM - IN CASE WE DECIDE TO USE DOCKER]
+
+Added Docker to Pi:
+>> sudo curl -sSL https://get.docker.com | sh
+
+Client:
+ Version:           18.09.0
+ API version:       1.39
+ Go version:        go1.10.4
+ Git commit:        4d60db4
+ Built:             Wed Nov  7 00:57:21 2018
+ OS/Arch:           linux/arm
+ Experimental:      false
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          18.09.0
+  API version:      1.39 (minimum version 1.12)
+  Go version:       go1.10.4
+  Git commit:       4d60db4
+  Built:            Wed Nov  7 00:17:57 2018
+  OS/Arch:          linux/arm
+  Experimental:     false
+
+Set Docker to auto-start
+>> sudo systemctl enable docker
+
+Reboot the Pi, or start the Docker daemon with:
+>> sudo systemctl start docker
+
+Enable Docker client
+The Docker client can only be used by root or members of the docker group. 
+Add pi or your equivalent user to the docker group:
+>> sudo usermod -aG docker pi
+
+
+[31 DEC 2018 - LJM - SETUP FOR APPROXENG GAME CONTROLLER LIBRARY]
+
+For instructions on setting up bluetooth controller, see
+https://approxeng.github.io/approxeng.input/bluetooth.html 
+
+sudo apt-get install bluetooth libbluetooth3 libusb-dev (nothing added - already up to date on all 3)
+sudo systemctl enable bluetooth.service
+	$$ Synchronizing state of bluetooth.service with SysV service script with /lib/systemd/systemd-sysv-install.
+	$$ Executing: /lib/systemd/systemd-sysv-install enable bluetooth
+sudo usermod -G bluetooth -a pi (adds pi user to bluetooth group so it can configure the bluetooth stack)
+
+
+CONFIGURING BLUETOOTH STACK TO AUTO CONNECT TO PS4 CONTROLLER (WITHOUT AUTHENTICATION)
+(commands entered as below - responses not shown)
+
+pi@raspberrypi ~ $ bluetoothctl
+[bluetooth]# agent on
+[bluetooth]# default-agent
+[bluetooth]# scan on        		(put controller into  discoverable mode to discover its MAC Address)
+[bluetooth]# pair DC:AF:68:94:29:70	(this is the MAC for our white PS4 controller)
+[bluetooth]# connect DC:AF:68:94:29:70
+[Wireless Controller]# trust DC:AF:68:94:29:70
+
+NOTE: When in bluetoothctl, the prompt indicates devices that you are connected to (e.g. [Wireless Controller]#)
+
+If you encounter any errors, it's best to unpair the device and re-pair it.
+remove DC:AF:68:94:29:70
+
+
+[06 JAN 2018 - LJM - FIRST STEPS WITH APPROXENG]
+
+sudo apt-get install python-dev python-pip gcc 	(already installed - no new files required)
+pip install approxeng.input			(python2 - use "pip3 install" for python3)
+
+
+[GITHUB]
+
+Create a folder for your Github repositories to live in:
+mkdir /home/pi/Desktop/GITHUB
+
+Clone your first repository (approxeng.input)
+git clone https://github.com/ApproxEng/approxeng.input.git
+
+Clone the PiWars project folder
+git clone https://github.com/SMPSCodeClub/PiWars-2019.git
+
+
+[Adafruit_GPIO - for I2C multiplexer]
+
+pip3 install RPi_GPIO - success (0.6.5-cp35) (same if I type RPi.GPIO)
+mkdir /home/pi/Desktop/GIT (if GIT not already created)
+cd /home/pi/Desktop/GIT
+git clone https:///github.com/adafruit/Adafruit_Python_GPIO.git
+cd Adafruit_Python_GPIO
+sudo python3 setup.py install

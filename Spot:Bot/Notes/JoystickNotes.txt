@@ -1,0 +1,88 @@
+[Game Controller - comms status & battery level]
+
+Thanks to a keen spot from one of the PiWars community (Brian Corteil) during the Black Friday 
+sales, Spot:Bot will be controlled from a PS4 DualShock4 controller. Yay!
+
+https://twitter.com/CannonFodder/status/1066289559384875009
+
+We have adopted Tom Oinn's approxeng.input class library (V2.2.0) for our robot:
+
+https://approxeng.github.io/approxeng.input/index.html
+
+When using wireless controllers, comms and battery issues are an ever present risk and potential 
+source of pain for the uninitiated. To mitigate the risk of comms or battery issues with the games
+controller biting us on the bum without warning and scuppering our performance on the day, we will
+monitor the connection status and battery level of the controller and display this information on 
+our robot's information display.
+
+The "connected" and "battery_level" properties of the approxeng.input controller class will allow 
+us to monitor both of these conditions easily within our control code.
+
+For the information display, we will use the internationally recognised WiFi symbol to represent 
+connection status (icon is visible = connected) and simply adjust the number of lines displayed 
+with this icon to encode the analog battery level information. Using a single icon to encode two
+types of information is particularly useful when there is limited screen real estate to play with
+(our display screen is only 128x128 pixels in size) Our proposed mapping between WiFi lines and 
+battery level is as follows:
+
+70+ = dot + 3 lines
+50+ = dot + 2 lines
+30+ = dot + 1 lines
+10+ = dot
+
+Always test your edge cases!!!
+
+We want to see what would happen when our bot lost comms with the controller. Afterall, we
+want to be sure that we can recover this situation quickly and easily on competition day
+should the unthinkable actually happen.
+
+First of all, will our information display alert us to this condition as required? We expect 
+(hope) the WiFi symbol to disappear from the display screen. However, on our first test this 
+was NOT what happened. Instead, our code fell over with the following error (edited down for 
+clarity):
+
+Traceback (most recent call last):
+	:
+	:
+  File ".....dualshock4.py", line 101, in battery_level
+    return float(read_power_level(self.device_unique_name)) / 100.0
+
+TypeError: float() argument must be a string or a number, not 'NoneType'
+
+From line 101 in the dualshock4.py class file:
+
+    @property
+    def battery_level(self):
+        return float(read_power_level(self.device_unique_name)) / 100.0
+
+
+This error occurs because the battery_level property implemented for the PS4 DualShock4 controller 
+in the approxeng.input class library calls a read_power_level() function that returns 'None' when 
+all else fails and then tries to cast that to a float that it then uses in a calculation. 'None' 
+is a special data type in Python. It does not have the same meaning as a numeric zero. You can cast 
+it to a string with the str() function, for logging purposes, but you cannot cast it to a float.
+
+We seem to have found a bug in the open-source class library that we are using. It does not handle
+the situation when there is no response from the controller at all well, resulting in code shutdown.
+
+We can fix this in the source code online at github.
+
+
+These have a cool feature which is a controllable LED. Default behaviour is to turn solid blue when 
+connected. I've been using this to see how far we can take it from the Bot before disconnecting.
+
+Lesson to learn: test all your potential failure cases to ensure they are handled properly in code! 
+
+
+print (float(None))
+
+print (str(None)) succeds
+
+Traceback (most recent call last):
+  File "main.py", line 20, in <module>
+    print ("NONE = " + str(None) + " (string), " + float(None) + " (float)")
+TypeError: float() argument must be a string or a number, not 'NoneType'
+
+Found a wee bugette in the Approximate Engineering dualshock4.py controller - it casts a None type 
+using float() when controller is disconnected. Fixed with a git commit, push and pull request. Have
+I now officially earned myself an Open Source developer badge with that?

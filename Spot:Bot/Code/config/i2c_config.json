@@ -1,0 +1,56 @@
+{
+    "scan_loop": [1,2,3,4],
+    "timing":	{ "sensor_sleep": 100, "loop_sleep": 250 },
+    "sensors":	{
+	"1" : {
+		"name": "distance-left",
+        	"type": "tof",
+		"i2cbus": 1,
+		"i2caddr": 29,
+		"mux": 3,
+		"config": { "range": 2 },
+		"readfn": "distance",
+		"writefn": null
+        },
+	"2" : {
+		"name":	"distance-right",
+        	"type": "tof",
+		"i2cbus": 1,
+		"i2caddr": 29,
+		"mux": 0,
+		"config": { "range": 2 },
+		"readfn": "distance",
+		"writefn": null
+        },
+	"3" : {
+		"name": "distance-front",
+        	"type": "tof",
+		"i2cbus": 1,
+		"i2caddr": 29,
+		"mux": 4,
+		"config": { "range": 2 },
+		"readfn": "distance",
+		"writefn": null
+        },
+	"4" : {
+		"name":	"compass",
+        	"type": "6dof",
+		"i2cbus": 1,
+		"i2caddr": "1D",
+		"mux": 2,
+		"config": { "range": 2 },
+		"readfn": "bearing",
+		"writefn": null
+        },
+	"5" : {
+		"name":	"display",
+        	"type": "oled",
+		"i2cbus": 1,
+		"i2caddr": "3C",
+		"mux": 1,
+		"config": { "range": 2 },
+		"readfn": null,
+		"writefn": "display_update"
+        }
+    }	
+}

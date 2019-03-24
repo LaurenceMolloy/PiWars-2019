@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/home/pi/thunderborg/tbGui.py
+Icon=/home/pi/thunderborg/piborg.ico
+Terminal=false
+Name=ThunderBorg Demo GUI
+Comment=ThunderBorg demonstration GUI
+Categories=Application;Development;
