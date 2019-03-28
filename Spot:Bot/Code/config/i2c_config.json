@@ -1,6 +1,6 @@
 {
-    "scan_loop": [1,2,3,4],
-    "timing":	{ "sensor_sleep": 100, "loop_sleep": 250 },
+    "scan_loop": [1,2,4],
+    "timing":	{ "sensor_sleep": 0.1, "loop_sleep": 0.5 },
     "sensors":	{
 	"1" : {
 		"name": "distance-left",
@@ -9,7 +9,7 @@
 		"i2caddr": 29,
 		"mux": 3,
 		"config": { "range": 2 },
-		"readfn": "distance",
+		"readfn": "self.read_distance",
 		"writefn": null
         },
 	"2" : {
@@ -19,7 +19,7 @@
 		"i2caddr": 29,
 		"mux": 0,
 		"config": { "range": 2 },
-		"readfn": "distance",
+		"readfn": "self.read_distance",
 		"writefn": null
         },
 	"3" : {
@@ -29,7 +29,7 @@
 		"i2caddr": 29,
 		"mux": 4,
 		"config": { "range": 2 },
-		"readfn": "distance",
+		"readfn": "self.read_distance",
 		"writefn": null
         },
 	"4" : {
@@ -39,7 +39,7 @@
 		"i2caddr": "1D",
 		"mux": 2,
 		"config": { "range": 2 },
-		"readfn": "bearing",
+		"readfn": "self.read_bearing",
 		"writefn": null
         },
 	"5" : {
@@ -50,7 +50,7 @@
 		"mux": 1,
 		"config": { "range": 2 },
 		"readfn": null,
-		"writefn": "display_update"
+		"writefn": "self.update_display"
         }
     }	
 }

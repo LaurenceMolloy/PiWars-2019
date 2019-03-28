@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/home/pi/Desktop/GIT/PiWars-2019/Spot:Bot/Code/')
+
 import time
 from Adafruit_GPIO import I2C
 import DisplayController
@@ -25,7 +28,7 @@ def connect_oled():
 #tca = I2C.get_i2c_device(address=0x70)
 #connect_oled()
 
-oled = DisplayController.DisplayContrtoller(rotate=3)
+oled = DisplayController.DisplayController(rotate=3)
 oled.configure()
 
 while True:
